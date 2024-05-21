@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import Nav from "@/components/Nav";
-// import Provider from "@/components/Provider";
+import Provider from "@/components/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Provider session={null}>
         <div className="main flex">
           <div className="gradient"></div>
         </div>
@@ -26,6 +27,7 @@ export default function RootLayout({
           <Nav />
           {children}
         </main>
+        </Provider>
       </body>
     </html>
   );
