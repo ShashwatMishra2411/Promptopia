@@ -1,109 +1,113 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useSession, signOut, signIn, getProviders } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
-export default function Nav() {
-  const isUserLoggedIn = true;
+export default function Nav(){
+  const { data: session } = useSession();
+
   const [providers, setProviders] = useState(null);
-  const [toggleDropDown, setToggleDropDown] = useState(false);
+  const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(() => {
-    const fetchProviders = async () => {
-      const providers = await getProviders();
-      setProviders(providers);
-    };
-    fetchProviders();
+    (async () => {
+      const res = await getProviders();
+      setProviders(res);
+    })();
   }, []);
+
   return (
-    <nav className="flex-between">
-      <Link href="/" className="flex gap-2 flex-center">
+    <nav className='flex-between w-full mb-16 pt-3'>
+      <Link href='/' className='flex gap-2 flex-center'>
         <Image
-          src="/assets/images/logo.svg"
-          alt="Promptopia Logo"
+          src='/assets/images/logo.svg'
+          alt='logo'
           width={30}
           height={30}
-          className="object-contain"
-        ></Image>
-        <p className="logo_text">Promptopia</p>
+          className='object-contain'
+        />
+        <p className='logo_text'>Promptopia</p>
       </Link>
-      <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
-          <div className="flex gap-3 md:gap-5">
-            <Link href="/create-post" className="black_btn">
+
+      {/* Desktop Navigation */}
+      <div className='sm:flex hidden'>
+        {session?.user ? (
+          <div className='flex gap-3 md:gap-5'>
+            <Link href='/create-prompt' className='black_btn'>
               Create Post
             </Link>
-            <button className="outline_btn" onClick={signOut}>
+
+            <button type='button' onClick={signOut} className='outline_btn'>
               Sign Out
             </button>
-            <Link href="/profile">
+
+            <Link href='/profile'>
               <Image
+                src={session?.user.image}
                 width={37}
                 height={37}
-                alt="profile"
-                src="/assets/images/logo.svg"
-              ></Image>
+                className='rounded-full'
+                alt='profile'
+              />
             </Link>
           </div>
         ) : (
           <>
             {providers &&
-              Object.values(providers).map((provider) => {
+              Object.values(providers).map((provider) => (
                 <button
-                  type="button"
+                  type='button'
                   key={provider.name}
                   onClick={() => {
                     signIn(provider.id);
                   }}
-                  className="black_btn"
+                  className='black_btn'
                 >
-                  Sign In
-                </button>;
-              })}
+                  Sign in
+                </button>
+              ))}
           </>
         )}
       </div>
-      {/* {Mobile Navigation} */}
-      <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
-          <div className="flex gap-1 md:gap-5">
+
+      {/* Mobile Navigation */}
+      <div className='sm:hidden flex relative'>
+        {session?.user ? (
+          <div className='flex'>
             <Image
+              src={session?.user.image}
               width={37}
               height={37}
-              alt="profile"
-              src="/assets/images/logo.svg"
-              className="rounded-full"
-              onClick={() => {
-                setToggleDropDown((prev) => {
-                  return !prev;
-                });
-              }}
-            ></Image>
-            {toggleDropDown && (
-              <div className="dropdown !justify-center !items-center">
+              className='rounded-full'
+              alt='profile'
+              onClick={() => setToggleDropdown(!toggleDropdown)}
+            />
+
+            {toggleDropdown && (
+              <div className='dropdown'>
                 <Link
-                  href="/profile"
-                  className="dropdown_link"
-                  onClick={() => setToggleDropDown(false)}
+                  href='/profile'
+                  className='dropdown_link'
+                  onClick={() => setToggleDropdown(false)}
                 >
                   My Profile
                 </Link>
                 <Link
-                  href="/create-prompt"
-                  className="dropdown_link"
-                  onClick={() => setToggleDropDown(false)}
+                  href='/create-prompt'
+                  className='dropdown_link'
+                  onClick={() => setToggleDropdown(false)}
                 >
                   Create Prompt
                 </Link>
                 <button
-                  className="mt-5 w-full black_btn"
+                  type='button'
                   onClick={() => {
-                    setToggleDropDown(false);
+                    setToggleDropdown(false);
                     signOut();
                   }}
+                  className='mt-5 w-full black_btn'
                 >
                   Sign Out
                 </button>
@@ -113,21 +117,21 @@ export default function Nav() {
         ) : (
           <>
             {providers &&
-              Object.values(providers).map((provider) => {
+              Object.values(providers).map((provider) => (
                 <button
-                  type="button"
+                  type='button'
                   key={provider.name}
                   onClick={() => {
                     signIn(provider.id);
                   }}
-                  className="black_btn"
+                  className='black_btn'
                 >
-                  Sign In
-                </button>;
-              })}
+                  Sign in
+                </button>
+              ))}
           </>
         )}
       </div>
     </nav>
   );
-}
+};
