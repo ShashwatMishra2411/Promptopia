@@ -57,6 +57,7 @@ export default function Nav(){
           <>
             {providers &&
               Object.values(providers).map((provider) => (
+                console.log("hi", provider.id, provider.name),
                 <button
                   type='button'
                   key={provider.name}
