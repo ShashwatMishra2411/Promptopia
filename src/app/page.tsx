@@ -8,7 +8,10 @@ export default function Home() {
         <span className="orange_gradient text-center">AI-Powered Promots</span>
       </h1>
       <p className="desc text-center">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consectetur dolores quia, sint obcaecati officiis iste sunt aperiam exercitationem praesentium officia nisi, enim, mollitia quae maiores nesciunt quod cum aspernatur alias.
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consectetur
+        dolores quia, sint obcaecati officiis iste sunt aperiam exercitationem
+        praesentium officia nisi, enim, mollitia quae maiores nesciunt quod cum
+        aspernatur alias.
       </p>
     </div>
   );
