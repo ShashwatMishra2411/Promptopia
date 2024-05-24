@@ -12,7 +12,22 @@ export default function CreatePrompt() {
     prompt: "",
     tag: "",
   });
-  const createprompt = async (e) => {};
+  const createprompt = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try{
+const res = await fetch("/api/prompt/new",{
+  method: "POST",
+  body:JSON.stringify({
+    prompt:post.prompt,
+    tag:post.tag,
+    userId:session.user.id,
+  })
+})
+    }catch(e){
+      console.log(e.message)
+    }
+  };
   return (
     <div>
       <Form
