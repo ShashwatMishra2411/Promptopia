@@ -5,7 +5,6 @@ const PromptCardList = ({ data, hadnleTagClick }) => {
   return (
     <div className="mt-16 flex-wrap flex justify-center prompt_layout">
       {data.map((post) => {
-        console.log(post)
         return (
           <PromptCard
             key={post._id}
@@ -29,7 +28,6 @@ export default function Feed() {
       const res = await fetch("/api/prompt");
       const data = await res.json();
       setPosts(data);
-      console.log("data = ", data);
     };
     fetchPosts();
   }, []);
