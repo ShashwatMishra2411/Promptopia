@@ -1,4 +1,5 @@
 import React from "react";
+import Feed from "@/components/Feed";
 export default function Home() {
   return (
     <div className="flex w-full flex-col justify-center items-center">
@@ -13,6 +14,7 @@ export default function Home() {
         praesentium officia nisi, enim, mollitia quae maiores nesciunt quod cum
         aspernatur alias.
       </p>
+      <Feed></Feed>
     </div>
   );
 }
