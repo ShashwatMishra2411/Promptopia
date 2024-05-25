@@ -28,29 +28,37 @@ export default function Form({
           </span>
           <textarea
             value={post.prompt}
-            onChange={(e) => setPost({ ...post, prompt: e.target.value })}
+            onChange={(e) => {
+              setPost({ ...post, prompt: e.target.value });
+              console.log(post);
+            }}
             className="form_textarea"
             placeholder="Write your prompt here..."
-            required
           ></textarea>
         </label>
         <label htmlFor="">
           <span className="font-satoshi font-semiold text-base text-gray-700">
-            Tag <span>(#product, #web, #k)</span>
+            Tag <span>(#product, #web, #ideas)</span>
           </span>
           <input
             value={post.tag}
-            onChange={(e) => setPost({ ...post, tag: e.target.value })}
+            onChange={(e) => {
+              setPost({ ...post, tag: e.target.value });
+              console.log(post);
+            }}
             className="form_input"
             placeholder="#tag"
-            required
           ></input>
         </label>
         <div className="flex-end mx-3 mb-5 gap-4">
           <Link href="/" className="text-gray-500 text-sm">
             Cancel
           </Link>
-          <button type="submit" className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white" disabled={submitting}>
+          <button
+            type="submit"
+            className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
+            disabled={submitting}
+          >
             {submitting ? `${type}...` : type}
           </button>
         </div>
