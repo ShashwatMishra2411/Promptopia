@@ -20,10 +20,19 @@ export default function MyProfile() {
     };
     if (session?.user.id) fetchPosts();
   }, [session]);
-  function handleEdit() {
-
+  function handleEdit(post) {
+    console.log("post", post);
+    router.push(`/update-prompt?id=${post._id}`);
   }
-  function handleDelete() {}
+  function handleDelete(post) {
+    const hasConfirmed = confirm("Are you sure you want to delete this post?");
+    if(hasConfirmed){
+      fetch(`/api/prompt/${post._id}`, {
+        method: "DELETE",
+      });
+      setPosts(posts.filter((p) => p._id !== post._id));
+    }
+  }
   return (
     <div>
       <Profile
