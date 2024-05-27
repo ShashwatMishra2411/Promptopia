@@ -22,6 +22,13 @@ export default function Feed() {
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
+  async function handleSubmit(e) {
+    e.preventDefault();
+    console.log("Hemlo");
+    const res = await fetch(`/api/${searchText}`);
+    const data = await res.json();
+    setPosts(data);
+  }
   useEffect(() => {
     // fetch data from the server
     const fetchPosts = async () => {
@@ -33,7 +40,11 @@ export default function Feed() {
   }, []);
   return (
     <section className="feed">
-      <form action="" className="relative w-full flex-center">
+      <form
+        onSubmit={handleSubmit}
+        action=""
+        className="relative w-full flex-center"
+      >
         <input
           type="text"
           placeholder="Search for a tag or a username"
