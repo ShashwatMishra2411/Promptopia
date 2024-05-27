@@ -24,7 +24,6 @@ export default function Feed() {
   };
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log("Hemlo");
     const res = await fetch(`/api/${searchText}`);
     const data = await res.json();
     setPosts(data);

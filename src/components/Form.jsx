@@ -30,7 +30,6 @@ export default function Form({
             value={post.prompt}
             onChange={(e) => {
               setPost({ ...post, prompt: e.target.value });
-              console.log(post);
             }}
             className="form_textarea"
             placeholder="Write your prompt here..."
@@ -44,7 +43,6 @@ export default function Form({
             value={post.tag}
             onChange={(e) => {
               setPost({ ...post, tag: e.target.value });
-              console.log(post);
             }}
             className="form_input"
             placeholder="#tag"

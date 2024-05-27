@@ -10,7 +10,6 @@ export default function Nav() {
 
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
-
   useEffect(() => {
     (async () => {
       const res = await getProviders();
@@ -39,7 +38,14 @@ export default function Nav() {
               Create Post
             </Link>
 
-            <button type="button" onClick={signOut} className="outline_btn">
+            <button
+              type="button"
+              onClick={async () => {
+                await signOut({ callbackUrl: `${window.location.origin}/` });
+                console.log("sign out");
+              }}
+              className="outline_btn"
+            >
               Sign Out
             </button>
 
@@ -104,9 +110,9 @@ export default function Nav() {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
                     setToggleDropdown(false);
-                    signOut();
+                    await signOut({ callbackUrl: `${window.location.origin}/` });
                   }}
                   className="mt-5 w-full black_btn"
                 >
