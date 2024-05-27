@@ -48,6 +48,18 @@ export default function Form({
             placeholder="#tag"
           ></input>
         </label>
+        <label htmlFor="">
+          <span className="font-satoshi font-semiold text-base text-gray-700">
+            Response
+          </span>
+          <div
+            // onChange={(e) => {
+            //   setPost({ ...post, response: e.target.value });
+            // }}
+            className="form_input"
+            placeholder="Response here..."
+          >{post.response}</div>
+        </label>
         <div className="flex-end mx-3 mb-5 gap-4">
           <Link href="/" className="text-gray-500 text-sm">
             Cancel
