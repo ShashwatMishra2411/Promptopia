@@ -10,6 +10,7 @@ export default function PromptCard({
   handleDelete,
 }) {
   const [copied, setCopy] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
   const { data: session } = useSession();
   const pathName = usePathname();
   const router = useRouter();
@@ -19,6 +20,11 @@ export default function PromptCard({
     setTimeout(() => {
       setCopy("");
     }, 3000);
+  }
+  function toggleExpanded() {
+    setIsExpanded((prev) => {
+      return !prev;
+    });
   }
   return (
     <div className="prompt_card">
@@ -39,7 +45,7 @@ export default function PromptCard({
               {post.creator.email}
             </p>
           </div>
-          <div className="copy_btn" onClick={handleCopy}>
+          <div className="copy_btn ml-auto" onClick={handleCopy}>
             <Image
               alt="copy_icon"
               src={
@@ -53,6 +59,25 @@ export default function PromptCard({
           </div>
         </div>
         <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+        <div className="my-4 font-satoshi border-2 border-gray-500 px-3 py-2 text-sm  text-gray-700">
+          <span className={isExpanded?"":"whitespace-nowrap !line-clamp-1"}>{post.response}</span>
+          {!isExpanded && post.response.length > 100 && (
+            <span
+              className="font-inter whitespace-nowrap text-sm blue_gradient cursor-pointer"
+              onClick={toggleExpanded}
+            >
+              Read more...
+            </span>
+          )}
+          {isExpanded && (
+            <span
+              className="font-inter text-sm whitespace-nowrap blue_gradient cursor-pointer"
+              onClick={toggleExpanded}
+            >
+              Show less
+            </span>
+          )}
+        </div>
         <p
           className="font-inter text-sm blue_gradient cursor-pointer"
           onClick={() => {
@@ -71,8 +96,8 @@ export default function PromptCard({
             </p>
             <p
               className="font-inter text-sm orange_gradient cursor-pointer"
-              onClick={()=>{
-                handleDelete(post);  
+              onClick={() => {
+                handleDelete(post);
               }}
             >
               Delete
