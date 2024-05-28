@@ -24,27 +24,35 @@ export default function CreatePrompt() {
       const result = await model.generateContent(post.prompt);
       const response = await result.response;
       const text = response.text();
-      console.log(text);
       setPost({ ...post, response: text });
-      const res = await fetch("/api/prompt/new", {
-        method: "POST",
-        body: JSON.stringify({
-          prompt: post.prompt,
-          tag: post.tag,
-          response: text,
-          userId: session.user.id,
-        }),
-      });
-      if (res.ok) {
-        // setPost({ prompt: "", tag: "", response: "" });
-        // router.push("/");
-      }
     } catch (e) {
       alert(e.message);
     } finally {
       setSubmitting(false);
     }
   };
+  async function posting() {
+    try {
+      setSubmitting(true);
+      const res = await fetch("/api/prompt/new", {
+        method: "POST",
+        body: JSON.stringify({
+          prompt: post.prompt,
+          tag: post.tag,
+          response: post.response,
+          userId: session.user.id,
+        }),
+      });
+      if (res.ok) {
+        setPost({ prompt: "", tag: "", response: "" });
+        // router.push("/");
+      }
+    } catch (e) {
+      console.log(e.message);
+    }finally{
+      setSubmitting(false);
+    }
+  }
   return (
     <div>
       <Form
@@ -52,7 +60,7 @@ export default function CreatePrompt() {
         post={post}
         setPost={setPost}
         submitting={submitting}
-        handleSubmit={createprompt}
+        handleSubmit={(post.response)?posting:createprompt}
       ></Form>
     </div>
   );

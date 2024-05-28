@@ -7,6 +7,8 @@ export default function Form({
   setPost,
   submitting,
   handleSubmit,
+  generate,
+  generatePrompt
 }) {
   return (
     <section className="w-full max-w-full flex-start flex-col">
@@ -58,18 +60,36 @@ export default function Form({
             // }}
             className="form_input"
             placeholder="Response here..."
-          >{post.response}</div>
+          >
+            {post.response}
+          </div>
         </label>
         <div className="flex-end mx-3 mb-5 gap-4">
           <Link href="/" className="text-gray-500 text-sm">
             Cancel
           </Link>
+          {generate ? (
+            <button
+              type="button"
+              className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
+              disabled={submitting}
+              onClick={generatePrompt}
+            >
+              {submitting ? "Generating..." : "Generate"}
+            </button>
+          ) : null}
           <button
             type="submit"
             className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
             disabled={submitting}
           >
-            {submitting ? `${type}...` : type}
+            {post.response
+              ? submitting
+                ? `Posting...`
+                : "Post"
+              : submitting
+              ? `${type}...`
+              : type}
           </button>
         </div>
       </form>

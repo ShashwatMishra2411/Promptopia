@@ -42,7 +42,6 @@ export default function Nav() {
               type="button"
               onClick={async () => {
                 await signOut({ callbackUrl: `${window.location.origin}/` });
-                console.log("sign out");
               }}
               className="outline_btn"
             >
@@ -63,7 +62,6 @@ export default function Nav() {
           <>
             {providers &&
               Object.values(providers).map((provider) => (
-                // console.log("hi", provider.id, provider.name),
                 <button
                   type="button"
                   key={provider.name}

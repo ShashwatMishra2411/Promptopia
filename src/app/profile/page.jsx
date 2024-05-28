@@ -21,7 +21,6 @@ export default function MyProfile() {
     if (session?.user.id) fetchPosts();
   }, [session]);
   function handleEdit(post) {
-    console.log("post", post);
     router.push(`/update-prompt?id=${post._id}`);
   }
   function handleDelete(post) {
