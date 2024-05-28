@@ -1,43 +1,56 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Form from "@/components/Form";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export default function UpdatePrompt() {
+function UpdatePromptComponent() {
   const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
   const router = useRouter();
+  const promptId = searchParams.get('id'); // Access the 'id' query parameter
   const { data: session } = useSession();
   const [submitting, setSubmitting] = useState(false);
   const [post, setPost] = useState({
     prompt: "",
     tag: "",
+    response: "",
   });
+
+  useEffect(() => {
+    if (promptId) {
+      const getPromptDetails = async () => {
+        const res = await fetch(`/api/prompt/${promptId}`);
+        const data = await res.json();
+        setPost({ prompt: data.prompt, tag: data.tag, response: data.response });
+      };
+
+      getPromptDetails();
+    }
+  }, [promptId]);
+
   async function generatePrompt() {
     setSubmitting(true);
     try {
-      const genAI = new GoogleGenerativeAI(
-        process.env.NEXT_PUBLIC_GEMINI_API_KEY
-      );
+      const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(post.prompt);
       const response = await result.response;
-      const text = response.text();
+      const text = await response.text();
       setPost({ ...post, response: text });
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     } finally {
       setSubmitting(false);
     }
   }
-  const updateprompt = async (e) => {
+
+  const updatePrompt = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     if (!promptId) return alert("Prompt not found");
+
     try {
       const res = await fetch(`/api/prompt/${promptId}`, {
         method: "PATCH",
@@ -48,24 +61,18 @@ export default function UpdatePrompt() {
           userId: session.user.id,
         }),
       });
+
       if (res.ok) {
-        setPost({ prompt: "", tag: "" });
+        setPost({ prompt: "", tag: "", response: "" });
         router.push("/");
       }
     } catch (e) {
-      console.log(e.message);
+      console.error(e.message);
     } finally {
       setSubmitting(false);
     }
   };
-  useEffect(() => {
-    const getPromptDetails = async () => {
-      const res = await fetch(`/api/prompt/${promptId}`);
-      const data = await res.json();
-      setPost({ prompt: data.prompt, tag: data.tag, response: data.response });
-    };
-    if (promptId) getPromptDetails();
-  }, [promptId]);
+
   return (
     <div>
       <Form
@@ -73,10 +80,18 @@ export default function UpdatePrompt() {
         post={post}
         setPost={setPost}
         submitting={submitting}
-        handleSubmit={updateprompt}
+        handleSubmit={updatePrompt}
         generate={true}
         generatePrompt={generatePrompt}
-      ></Form>
+      />
     </div>
+  );
+}
+
+export default function UpdatePrompt() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UpdatePromptComponent />
+    </Suspense>
   );
 }
