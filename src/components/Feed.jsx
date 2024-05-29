@@ -31,7 +31,7 @@ export default function Feed() {
   useEffect(() => {
     // fetch data from the server
     const fetchPosts = async () => {
-      const res = await fetch("/api/prompt");
+      const res = await fetch("/api/prompt", { cache: 'no-store' });
       const data = await res.json();
       setPosts(data);
     };

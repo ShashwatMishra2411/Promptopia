@@ -3,9 +3,10 @@ import Prompt from "@/models/prompt";
 
 export const GET = async (req, res) => {
   try {
+    res.setHeader("Cache-Control", "no-store"); // Disable Vercel caching
     await connectToDB();
     const prompts = await Prompt.find({}).populate("creator");
-    console.log(prompts)
+    console.log(prompts);
     return new Response(JSON.stringify(prompts), { status: 200 });
   } catch (e) {
     console.log(e.message);
