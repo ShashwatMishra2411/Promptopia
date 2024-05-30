@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import PromptCard from "./PromptCard";
 const PromptCardList = ({ data, hadnleTagClick }) => {
   return (
@@ -19,6 +20,7 @@ const PromptCardList = ({ data, hadnleTagClick }) => {
 export default function Feed() {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
@@ -28,17 +30,32 @@ export default function Feed() {
     const data = await res.json();
     setPosts(data);
   }
+  const fetchPosts = async () => {
+    const res = await fetch("/api/prompt", { cache: "no-store" });
+    const data = await res.json();
+    setPosts(data);
+  };
   useEffect(() => {
     // fetch data from the server
-    const fetchPosts = async () => {
-      const res = await fetch("/api/prompt", { cache: 'no-store' });
-      const data = await res.json();
-      setPosts(data);
-    };
     fetchPosts();
   }, []);
   return (
     <section className="feed">
+      <button
+        className={`${loading ? " animate-spin" : ""} self-end`}
+        onClick={async () => {
+          setLoading(true);
+          await fetchPosts();
+          setLoading(false);
+        }}
+      >
+        <Image
+          width={30}
+          height={30}
+          src="/assets/icons/refresh.svg"
+          alt="Refresh Feed"
+        ></Image>
+      </button>
       <form
         onSubmit={handleSubmit}
         action=""
