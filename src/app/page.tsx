@@ -12,9 +12,9 @@ export default function Home() {
         <span className="orange_gradient text-center">AI-Powered Prompts</span>
       </h1>
       <p className="desc text-center">
-        A community platform to generate and share creative prompts using AI.
-        Input prompts, see AI-generated responses, and engage with a collaborative feed
-        to inspire creativity and knowledge sharing.
+        Welcome to our vibrant community platform where creativity meets technology.
+        Generate innovative prompts with AI, share your unique ideas, and explore a collaborative feed.
+        Join us in inspiring creativity and fostering knowledge sharing through AI-powered interactions.
       </p>
       <Feed />
     </div>
