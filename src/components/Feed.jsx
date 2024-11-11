@@ -8,7 +8,7 @@ const PromptCardList = ({ data, hadnleTagClick }) => {
       {data.map((post) => {
         return (
           <PromptCard
-            key={post._id}
+            key={post.id}
             post={post}
             handleTagClick={hadnleTagClick}
           ></PromptCard>
@@ -33,6 +33,7 @@ export default function Feed() {
   const fetchPosts = async () => {
     const res = await fetch("/api/prompt", { cache: "no-store" });
     const data = await res.json();
+    console.log(data);
     setPosts(data);
   };
   useEffect(() => {
