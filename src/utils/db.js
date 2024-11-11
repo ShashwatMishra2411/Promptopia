@@ -1,24 +1,12 @@
-import mongoose from 'mongoose';
+// /lib/dynamoClient.js
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
-let isConnected = false; // track the connection
+const client = new DynamoDBClient({
+  region: process.env.AWS_REGION, // e.g., "us-east-1"
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
-export const connectToDB = async () => {
-  mongoose.set('strictQuery', true);
-
-  if(isConnected) {
-    console.log('MongoDB is already connected');
-    return;
-  }
-
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      dbName: "share_prompt",
-    })
-
-    isConnected = true;
-
-    console.log('MongoDB connected')
-  } catch (error) {
-    console.log(error);
-  }
-}
+export default client;
