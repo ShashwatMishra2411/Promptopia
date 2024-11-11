@@ -15,17 +15,18 @@ export default function Profile({
       </h1>
       <p className="desc text-left">{desc}</p>
       <div className="mt-10 flex-wrap flex justify-center prompt_layout">
-      {data.map((post) => {
-        return (
-          <PromptCard
-            key={post._id}
-            post={post}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          ></PromptCard>
-        );
-      })}
-    </div>
+        {data.length > 0 &&
+          data.map((post) => {
+            return (
+              <PromptCard
+                key={post.id}
+                post={post}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              ></PromptCard>
+            );
+          })}
+      </div>
     </section>
   );
 }
