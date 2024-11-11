@@ -2,14 +2,15 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // ...
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import Form from "@/components/Form";
 
 export default function CreatePrompt() {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const [submitting, setSubmitting] = useState(false);
+  const [session, setSession] = useState(null);
   const [post, setPost] = useState({
     prompt: "",
     tag: "",
@@ -17,6 +18,16 @@ export default function CreatePrompt() {
   });
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const data = JSON.parse(token);
+      console.log(data);
+      setSession({
+        user: { email: data.email.S, name: data.name.S },
+      });
+    }
+  }, []);
   const createprompt = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -34,22 +45,23 @@ export default function CreatePrompt() {
   async function posting() {
     try {
       setSubmitting(true);
+      console.log("session = " + session);
       const res = await fetch("/api/prompt/new", {
         method: "POST",
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
           response: post.response,
-          userId: session.user.id,
+          userId: JSON.parse(localStorage.getItem("token")).email.S,
         }),
       });
       if (res.ok) {
         setPost({ prompt: "", tag: "", response: "" });
-        // router.push("/");
       }
+      console.log(res);
     } catch (e) {
       console.log(e.message);
-    }finally{
+    } finally {
       setSubmitting(false);
     }
   }
@@ -60,7 +72,7 @@ export default function CreatePrompt() {
         post={post}
         setPost={setPost}
         submitting={submitting}
-        handleSubmit={(post.response)?posting:createprompt}
+        handleSubmit={post.response ? posting : createprompt}
       ></Form>
     </div>
   );
