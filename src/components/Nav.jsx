@@ -1,21 +1,84 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Nav() {
-  const { data: session } = useSession();
+  const router = useRouter();
 
-  const [providers, setProviders] = useState(null);
+  const [session, setSession] = useState(null); // Local state for session
   const [toggleDropdown, setToggleDropdown] = useState(false);
+
   useEffect(() => {
-    (async () => {
-      const res = await getProviders();
-      setProviders(res);
-    })();
+    // Fetch session from localStorage on initial load
+    const token = localStorage.getItem("token");
+    if (token) {
+      setSession({
+        user: { email: token.email, name: token.name },
+      });
+    }
   }, []);
+
+  // Handle sign in
+  const handleSignIn = async () => {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "user123@example.com",
+        name: "Shashwat",
+        password: "password123",
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // Convert data.data to JSON string and store in localStorage
+      localStorage.setItem("token", JSON.stringify(data.data));
+
+      setSession({
+        user: { email: data.data.email.S, name: data.data.name.S },
+      });
+      console.log(localStorage.getItem("token"));
+      router.push("/"); // Redirect after successful login
+    } else {
+      console.error(data.message);
+    }
+  };
+
+  const handleSignUp = async () => {
+    console.log("hi");
+    const urlData = await fetch("/api/listImages");
+    const url = await urlData.json();
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "user123@example.com",
+        name: "Shashwat",
+        password: "password123",
+        url: url[0],
+      }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      console.error(data.message);
+      return;
+    }
+    console.log("User signed up successfully");
+  };
+  // Handle sign out
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    setSession(null);
+    router.push("/"); // Redirect after successful sign out
+  };
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -40,9 +103,7 @@ export default function Nav() {
 
             <button
               type="button"
-              onClick={async () => {
-                await signOut({ callbackUrl: `${window.location.origin}/` });
-              }}
+              onClick={handleSignOut}
               className="outline_btn"
             >
               Sign Out
@@ -50,7 +111,11 @@ export default function Nav() {
 
             <Link href="/profile">
               <Image
-                src={session?.user.image}
+                src={
+                  localStorage.getItem("token")
+                    ? JSON.parse(localStorage.getItem("token")).url.S
+                    : "/logo.png"
+                }
                 width={37}
                 height={37}
                 className="rounded-full"
@@ -59,21 +124,14 @@ export default function Nav() {
             </Link>
           </div>
         ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => {
-                    signIn(provider.id);
-                  }}
-                  className="black_btn"
-                >
-                  Sign in
-                </button>
-              ))}
-          </>
+          <div className="flex gap-10">
+            <button type="button" onClick={handleSignUp} className="black_btn">
+              Sign Up
+            </button>
+            <button type="button" onClick={handleSignIn} className="black_btn">
+              Sign in
+            </button>
+          </div>
         )}
       </div>
 
@@ -108,10 +166,7 @@ export default function Nav() {
                 </Link>
                 <button
                   type="button"
-                  onClick={async () => {
-                    setToggleDropdown(false);
-                    await signOut({ callbackUrl: `${window.location.origin}/` });
-                  }}
+                  onClick={handleSignOut}
                   className="mt-5 w-full black_btn"
                 >
                   Sign Out
@@ -120,21 +175,9 @@ export default function Nav() {
             )}
           </div>
         ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => {
-                    signIn(provider.id);
-                  }}
-                  className="black_btn"
-                >
-                  Sign in
-                </button>
-              ))}
-          </>
+          <button type="button" onClick={handleSignIn} className="black_btn">
+            Sign in
+          </button>
         )}
       </div>
     </nav>
