@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 export default function PromptCard({
   post,
@@ -11,7 +11,7 @@ export default function PromptCard({
 }) {
   const [copied, setCopy] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: session } = useSession();
+  const [session, setSession] = useState(null);
   const pathName = usePathname();
   const router = useRouter();
   function handleCopy() {
@@ -31,7 +31,11 @@ export default function PromptCard({
       <div className="flex flex-col justify-between item-start gap-5">
         <div className="flex-1 flex flex-start items-center gap-3 cursor-pointer">
           <Image
-            src={post.creator?.image}
+            src={
+              localStorage.getItem("token")
+                ? JSON.parse(localStorage.getItem("token")).url.S
+                : "/logo.png"
+            }
             alt="user_image"
             width={40}
             height={40}
@@ -41,9 +45,7 @@ export default function PromptCard({
             <h3 className="font-satoshi font-semibold text-gray-900">
               {post.creator.username}
             </h3>
-            <p className="font-inter text-sm text-gray-500">
-              {post.creator.email}
-            </p>
+            <p className="font-inter text-sm text-gray-500">{post.creator}</p>
           </div>
           <div className="copy_btn ml-auto" onClick={handleCopy}>
             <Image
@@ -60,7 +62,9 @@ export default function PromptCard({
         </div>
         <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
         <div className="my-4 font-satoshi border-2 border-gray-500 px-3 py-2 text-sm  text-gray-700">
-          <span className={isExpanded?"":"whitespace-nowrap !line-clamp-1"}>{post.response}</span>
+          <span className={isExpanded ? "" : "whitespace-nowrap !line-clamp-1"}>
+            {post.response}
+          </span>
           {!isExpanded && post.response.length > 100 && (
             <span
               className="font-inter whitespace-nowrap text-sm blue_gradient cursor-pointer"
@@ -86,7 +90,7 @@ export default function PromptCard({
         >
           #{post.tag}
         </p>
-        {session?.user.id === post.creator._id && pathName === "/profile" && (
+        {pathName === "/profile" && (
           <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
             <p
               className="font-inter text-sm green_gradient cursor-pointer"
