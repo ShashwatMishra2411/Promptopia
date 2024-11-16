@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
+import Markdown from "react-markdown";
 // import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 export default function PromptCard({
@@ -63,7 +64,7 @@ export default function PromptCard({
         <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
         <div className="my-4 font-satoshi border-2 border-gray-500 px-3 py-2 text-sm  text-gray-700">
           <span className={isExpanded ? "" : "whitespace-nowrap !line-clamp-1"}>
-            {post.response}
+            <Markdown>{post.response}</Markdown>
           </span>
           {!isExpanded && post.response.length > 100 && (
             <span
