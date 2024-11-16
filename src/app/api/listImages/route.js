@@ -15,7 +15,7 @@ const s3Client = new S3Client({
 });
 
 export async function GET(req, res) {
-  const bucketName = "aprojbucket";
+  const bucketName = "hello123hi";
 
   try {
     const command = new ListObjectsV2Command({
