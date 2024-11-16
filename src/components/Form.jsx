@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Markdown from "react-markdown";
 
 export default function Form({
   type,
@@ -8,7 +9,7 @@ export default function Form({
   submitting,
   handleSubmit,
   generate,
-  generatePrompt
+  generatePrompt,
 }) {
   return (
     <section className="w-full max-w-full flex-start flex-col">
@@ -58,10 +59,10 @@ export default function Form({
             // onChange={(e) => {
             //   setPost({ ...post, response: e.target.value });
             // }}
-            className="form_input"
+            className="form_input overflow-hidden flex flex-col"
             placeholder="Response here..."
           >
-            {post.response}
+            <Markdown>{post.response}</Markdown>
           </div>
         </label>
         <div className="flex-end mx-3 mb-5 gap-4">
